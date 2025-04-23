@@ -9,10 +9,6 @@ import json
 # Load FAQ data from a JSON file with UTF-8 encoding
 
 
-with open('faq.json', 'r', encoding='utf-8') as file:
-    faq_data = json.load(file)
-
-
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "static/uploads"
@@ -34,36 +30,8 @@ def encode_image(image_path):
 def index():
     return render_template("index.html")
 
-# Load Images data
-import json
-
-def load_faq_data():
-    with open('images2.json', 'r', encoding='utf-8') as file:
-        data = json.load(file)
-    
-    # Extract the list from the dictionary
-    if isinstance(data, dict) and "standardSculptures" in data:
-        return data["standardSculptures"]
-    
-    raise ValueError("Unexpected JSON structure. Expected 'standardSculptures' key.")
-
-from rapidfuzz import process, fuzz
 
 
-def find_top_matches(user_input, data):
-    if not isinstance(data, list) or not all(isinstance(item, dict) for item in data):
-        raise ValueError("Data should be a list of dictionaries.")
-
-    # Extract names from data and store a reference dictionary
-    choices = {item.get("name", "").lower(): item for item in data if "name" in item}
-
-    # Use process.extract to get top 100 matches with optimized scoring
-    matches = process.extract(user_input.lower(), choices.keys(), scorer=fuzz.QRatio, limit=100)
-
-    # Return sorted list based on similarity score
-    sorted_matches = [choices[match[0]] for match in matches]
-
-    return sorted_matches  # Returns top 100 matches
 
 
 @app.route("/chatbot", methods=["POST"])
@@ -72,11 +40,6 @@ def chatbot():
     uploaded_file = request.files.get("image")
 
     try:
-                # Load image data and find top matches
-        image_data = load_faq_data()
-        sorted_matches = find_top_matches(user_input, image_data)[:100]  # Get only the top 10 matches
-        print(json.dumps(sorted_matches, indent=2, ensure_ascii=False))
-
         # Create the custom prompt with matched results
         custom_prompt = f"""
         You are an AI assistant that generates ice sculpture images for an ice sculpture company named "Ice Butcher".
