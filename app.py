@@ -7,7 +7,10 @@ import json
 
 
 
+from flask_cors import CORS  # Add this at the top with other imports
+
 app = Flask(__name__)
+CORS(app)  # Add this right after creating your Flask app
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 
 # Load environment variables from .env file
