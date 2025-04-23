@@ -9,8 +9,7 @@ import json
 
 from flask_cors import CORS  # Add this at the top with other imports
 
-app = Flask(__name__)
-CORS(app)  # Add this right after creating your Flask app
+
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 
 # Load environment variables from .env file
@@ -160,6 +159,7 @@ def chatbot():
 
     except Exception as e:
         return jsonify({"response": f"Error: {str(e)}"})
-
+app = Flask(__name__)
+CORS(app)  # Add this right after creating your Flask app
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
